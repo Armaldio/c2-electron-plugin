@@ -1,26 +1,16 @@
 ﻿function GetPluginSettings() {
   return {
-    "name": "Electron", // as appears in 'insert object' dialog, can be changed as long as "id" stays the same
-    "id": "armaldio_electron", // this is used to identify this plugin and is saved to the project; never change it
-    "version": "1.1", // (float in x.y format) Plugin version - C2 shows compatibility warnings based on this
+    "name": "Electron",
+    "id": "armaldio_electron",
+    "version": "1.0",
     "description": "Run your game with the best performances inside Electron",
     "author": "Armaldio",
     "help url": "",
-    "category": "General", // Prefer to re-use existing categories, but you can set anything here
-    "type": "object", // either "world" (appears in layout and is drawn), else "object"
-    "rotatable": false, // only used when "type" is "world".  Enables an angle property on the object.
-    "flags": 0 // uncomment lines to enable flags...
-      |
-      pf_singleglobal // exists project-wide, e.g. mouse, keyboard.  "type" must be "object".
-      //	| pf_texture			// object has a single texture (e.g. tiled background)
-      //	| pf_position_aces		// compare/set/get x, y...
-      //	| pf_size_aces			// compare/set/get width, height...
-      //	| pf_angle_aces			// compare/set/get angle (recommended that "rotatable" be set to true)
-      //	| pf_appearance_aces	// compare/set/get visible, opacity...
-      //	| pf_tiling				// adjusts image editor features to better suit tiled images (e.g. tiled background)
-      //	| pf_animations			// enables the animations system.  See 'Sprite' for usage
-      //	| pf_zorder_aces		// move to top, bottom, layer...
-      //  | pf_nosize				// prevent resizing in the editor
+    "category": "General",
+    "type": "object",
+    "rotatable": false,
+    "flags": 0 |
+      pf_singleglobal
   };
 };
 
@@ -42,49 +32,73 @@
 ////////////////////////////////////////
 // Conditions
 
-// AddCondition(id,					// any positive integer to uniquely identify this condition
-//				flags,				// (see docs) cf_none, cf_trigger, cf_fake_trigger, cf_static, cf_not_invertible,
-//									// cf_deprecated, cf_incompatible_with_triggers, cf_looping
-//				list_name,			// appears in event wizard list
-//				category,			// category in event wizard list
-//				display_str,		// as appears in event sheet - use {0}, {1} for parameters and also <b></b>, <i></i>
-//				description,		// appears in event wizard dialog when selected
-//				script_name);		// corresponding runtime function name
-
 AddStringParam("Tag", "The unique tag", "");
 AddCondition(0, cf_trigger, "On save success", "Save", "On save {0} success", "Trigger when a specific save action succeed", "OnSaveSuccess");
 
 AddStringParam("Tag", "The unique tag", "");
 AddCondition(1, cf_trigger, "On save fail", "Save", "On save {0} fail", "Trigger when a specific save action fail to save", "OnSaveFail");
+
+AddStringParam("Tag", "The unique tag", "");
+AddCondition(3, cf_trigger, "On read success", "Read", "On read {0} success", "Trigger when a specific read action succeed", "OnReadSuccess");
+
+AddStringParam("Tag", "The unique tag", "");
+AddCondition(4, cf_trigger, "On read fail", "Read", "On read {0} fail", "Trigger when a specific read action fail to read", "OnReadFail");
+
+AddCondition(2, cf_none, "Is Electron", "Test", "If the platform is Electron", "Test if the game is running on electron", "IsElectron");
 ////////////////////////////////////////
 // Actions
 
-// AddAction(id,				// any positive integer to uniquely identify this action
-//			 flags,				// (see docs) af_none, af_deprecated
-//			 list_name,			// appears in event wizard list
-//			 category,			// category in event wizard list
-//			 display_str,		// as appears in event sheet - use {0}, {1} for parameters and also <b></b>, <i></i>
-//			 description,		// appears in event wizard dialog when selected
-//			 script_name);		// corresponding runtime function name
+AddAction(1, cf_none, "Exit", "App", "Close electron windows", "Close electron windows", "Exit");
+AddAction(2, cf_none, "Restart", "App", "Restart electron windows", "Restart electron windows", "Restart");
+AddAction(3, cf_none, "Focus", "App", "Focuses on the application’s first window", "focuses on the application’s first window", "Focus");
+AddAction(4, cf_none, "Hide", "App", "Hide app window", "Hide app window", "Hide");
+AddAction(5, cf_none, "Show", "App", "Show app window", "Show app window", "Show");
+AddAction(7, cf_none, "Maximize", "App", "Maximize window", "Maximize window", "Maximize");
+
+AddComboParamOption("Fullscreen");
+AddComboParamOption("Not fullscreen");
+AddComboParam("State", "Fullscreen state", "Set fullscreen"); // a dropdown list parameter
+AddAction(8, cf_none, "Set Fullscreen", "App", "Set {0}", "Toggle fullscreen", "Fullscreen");
+
+AddStringParam("Title", "The title of the window", "");
+AddStringParam("Fefault path", "The preselected path", "");
+AddStringParam("Confirmation text (optional)", "The text of the Confirm button", "");
+AddStringParam("Filters (TODO)", "You can filter by filetype", "");
+AddStringParam("Properties", "openFile, openDirectory, multiSelections, createDirectory and showHiddenFiles (comma separated)", "");
+AddAction(6, cf_none, "Show open dialog", "Dialog", "Open a dialog to chose a file", "Open a dialog to chose a file", "ShowOpenDialog");
 
 AddStringParam("Tag", "A unique tag to keep track of the result", "");
-AddStringParam("Path", "The path where to write", "");
+AddStringParam("Path", "The path of the file to write", "");
 AddStringParam("Data", "The data to write", "");
-AddAction(0, cf_none, "Write data to path", "Write", "Write {2} to {1} ({0})", "Write data to a specific path asynchronously", "Write");
+AddAction(0, cf_none, "Write data to file", "Write", "Write {2} to {1} ({0})", "Write data to a specific file asynchronously", "Write");
+
+AddStringParam("Tag", "A unique tag to keep track of the result", "");
+AddStringParam("Path", "The file to read", "");
+AddAction(9, cf_none, "Read file", "Read", "Read {1} ({0})", "Read a file asynchronously", "Read");
+
 ////////////////////////////////////////
 // Expressions
 
-// AddExpression(id,			// any positive integer to uniquely identify this expression
-//				 flags,			// (see docs) ef_none, ef_deprecated, ef_return_number, ef_return_string,
-//								// ef_return_any, ef_variadic_parameters (one return flag must be specified)
-//				 list_name,		// currently ignored, but set as if appeared in event wizard
-//				 category,		// category in expressions panel
-//				 exp_name,		// the expression name after the dot, e.g. "foo" for "myobject.foo" - also the runtime function name
-//				 description);	// description in expressions panel
+AddExpression(0, ef_return_any, "Get app path", "App", "GetAppPath", "Returns the current application directory.");
 
-//AddStringParam("Field", "The field you want to translate", "");
-//AddStringParam("Parameters", "If there are $x inside the string you can replace it with :\n1:word;2:otherword", "");
-//AddExpression(0, ef_return_any, "Get value", "Value", "GetValue", "Get the translation of a field based on the current language");
+AddExpression(2, ef_return_any, "Get Locale", "App", "GetLocale", "Get locale based on the system");
+
+AddExpression(3, ef_return_any, "Get OS arch", "OS", "GetOSArch", "Returns a string identifying the operating system CPU architecture");
+AddExpression(4, ef_return_any, "Get OS homedir", "OS", "GetOSHomedir", "Returns the home directory of the current user");
+AddExpression(5, ef_return_any, "Get OS hostname", "OS", "GetOSHostname", "Returns the hostname of the operating system");
+AddExpression(6, ef_return_any, "Get platform", "OS", "GetOSPlatform", "Returns the operating system platform");
+
+AddExpression(7, ef_return_any, "Get user's home path", "Path", "GetHomePath", "User’s home directory");
+AddExpression(8, ef_return_any, "Get appdata path", "Path", "GetAppDataPath", "%APPDATA% (Win), $XDG_CONFIG_HOME or ~/.config (linux), ~/Library/Application (Mac)");
+AddExpression(9, ef_return_any, "Get user data path", "Path", "GetUserDataPath", "By default it is the appData directory appended with your app’s name");
+AddExpression(10, ef_return_any, "Get current executable file path", "Path", "GetExePath", "The current executable file");
+AddExpression(11, ef_return_any, "Get desktop path", "Path", "GetDesktopPath", "The current user’s Desktop directory");
+AddExpression(12, ef_return_any, "Get documents path", "Path", "GetDocumentsPath", "User’s document directory");
+AddExpression(13, ef_return_any, "Get downloads path", "Path", "GetDownloadsPath", "User’s download directory");
+AddExpression(14, ef_return_any, "Get music path", "Path", "GetMusicPath", "User’s music directory");
+AddExpression(15, ef_return_any, "Get pictures path", "Path", "GetPicturesPath", "User’s picture directory");
+AddExpression(16, ef_return_any, "Get videos path", "Path", "GetVideoPath", "User’s video directory");
+AddExpression(17, ef_return_any, "Get temp path", "Path", "GetTempPath", "Temporary folder path");
 ////////////////////////////////////////
 ACESDone();
 
@@ -111,7 +125,7 @@ function IDEObjectType() {
 }
 
 // Called by IDE when a new object instance of this type is to be created
-IDEObjectType.prototype.CreateInstance = function(instance) {
+IDEObjectType.prototype.CreateInstance = function (instance) {
   return new IDEInstance(instance);
 }
 
@@ -134,19 +148,19 @@ function IDEInstance(instance, type) {
 }
 
 // Called when inserted via Insert Object Dialog for the first time
-IDEInstance.prototype.OnInserted = function() {}
+IDEInstance.prototype.OnInserted = function () {}
 
 // Called when double clicked in layout
-IDEInstance.prototype.OnDoubleClicked = function() {}
+IDEInstance.prototype.OnDoubleClicked = function () {}
 
 // Called after a property has been changed in the properties bar
-IDEInstance.prototype.OnPropertyChanged = function(property_name) {}
+IDEInstance.prototype.OnPropertyChanged = function (property_name) {}
 
 // For rendered objects to load fonts or textures
-IDEInstance.prototype.OnRendererInit = function(renderer) {}
+IDEInstance.prototype.OnRendererInit = function (renderer) {}
 
 // Called to draw self in the editor if a layout object
-IDEInstance.prototype.Draw = function(renderer) {}
+IDEInstance.prototype.Draw = function (renderer) {}
 
 // For rendered objects to release fonts or textures
-IDEInstance.prototype.OnRendererReleased = function(renderer) {}
+IDEInstance.prototype.OnRendererReleased = function (renderer) {}
