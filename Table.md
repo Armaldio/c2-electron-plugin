@@ -1,5 +1,5 @@
 # Configuration
-## Electron plugin - v1.0 - by Armaldio<img src='armaldio_electron\PluginIcon.ico' alt='Icon'>
+## Electron plugin - v1.0 - by Armaldio<img src='PluginIcon.ico' alt='Icon'>
 Property | Value
 --- | ---
 Description | Run your game with the best performances inside Electron
