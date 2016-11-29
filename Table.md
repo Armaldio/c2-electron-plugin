@@ -1,177 +1,236 @@
 # Configuration
+## Electron plugin - v1.0 - by Armaldio<img src='armaldio_electron\PluginIcon.ico' alt='Icon'>
+Property | Value
+--- | ---
+Description | Run your game with the best performances inside Electron
+Category | General
+Cordova-plugins | No
+Flags | No
+Help | https://github.com/armaldio/c2-electron-plugin
+Id | armaldio_electron
+Rotatable | No
+Type | object
 
-## Electron plugin - v1.0 - by Armaldio
-
-Description : Run your game with the best performances inside Electron
-
-Category : General
-
-Cordova-plugins : undefined
-
-Flags : No
-
-Help : 
-
-Id : armaldio_electron
-
-Rotatable : No
-
-Type : object
-
-<br>
 # Actions
-
-There are 10 actions available
-
+#### There are 14 actions available
 **Exit** : Close electron windows *#App*
 
-<br>
+---
+
 **Restart** : Restart electron windows *#App*
 
-<br>
-**Focus** : focuses on the application’s first window *#App*
+---
 
-<br>
+**Focus** : focuses on the applicationâ€™s first window *#App*
+
+---
+
 **Hide** : Hide app window *#App*
 
-<br>
+---
+
 **Show** : Show app window *#App*
 
-<br>
+---
+
 **Maximize** : Maximize window *#App*
 
-<br>
+---
+
 **Set Fullscreen** : Toggle fullscreen *#App*
 
-There is 1 parameters : 
-
 * **State** : Fullscreen state (default value : Set fullscreen)
-
   * Fullscreen
-
   * Not fullscreen
 
-<br>
+---
+
 **Show open dialog** : Open a dialog to chose a file *#Dialog*
 
-There are 5 parameters : 
-
 * **Title** : The title of the window
-
 * **Fefault path** : The preselected path
-
 * **Confirmation text (optional)** : The text of the Confirm button
-
 * **Filters (TODO)** : You can filter by filetype
-
 * **Properties** : openFile, openDirectory, multiSelections, createDirectory and showHiddenFiles (comma separated)
 
-<br>
-**Write data to file** : Write data to a specific file asynchronously *#Write*
+---
 
-There are 3 parameters : 
+**Write asynchronous** : Write data to a specific file asynchronously *#Write*
 
 * **Tag** : A unique tag to keep track of the result
-
 * **Path** : The path of the file to write
-
 * **Data** : The data to write
 
-<br>
+---
+
 **Read file** : Read a file asynchronously *#Read*
 
-There are 2 parameters : 
-
 * **Tag** : A unique tag to keep track of the result
-
 * **Path** : The file to read
+* **Encoding** : The encoding of the file (default value : utf8)
 
-<br>
+---
+
+**Read synchronously a file** : Read a file synchronously *#Read*
+
+* **Path** : The path of the file to read
+
+---
+
+**Delete synchronously a file** : Delete a file synchronously *#Delete*
+
+* **Path** : The path of the file to read
+
+---
+
+**Create synchronously a file** : Create a file synchronously *#Create*
+
+* **Path** : The path of the file to read
+
+---
+
+**Write synchronous** : Write data to a specific file synchronously *#Write*
+
+* **Path** : The path of the file to write
+* **Data** : The data to write
+* **Encoding** : The encoding of the file (default value : utf8)
+* **Overwrite** : Overwrite the file if it already exists (default value : No)
+  * No
+  * Yes
+
+---
+
 # Conditions
-
-There are 5 conditions available
-
+#### There are 6 conditions available
 **On save success** : Trigger when a specific save action succeed *#Save*
 
-There is 1 parameters : 
-
 * **Tag** : The unique tag
 
-<br>
+---
+
 **On save fail** : Trigger when a specific save action fail to save *#Save*
 
-There is 1 parameters : 
-
 * **Tag** : The unique tag
 
-<br>
+---
+
 **On read success** : Trigger when a specific read action succeed *#Read*
 
-There is 1 parameters : 
-
 * **Tag** : The unique tag
 
-<br>
+---
+
 **On read fail** : Trigger when a specific read action fail to read *#Read*
 
-There is 1 parameters : 
-
 * **Tag** : The unique tag
 
-<br>
+---
+
 **Is Electron** : Test if the game is running on electron *#Test*
 
-<br>
+---
+
+**For each file/folder** : Repeat the event for each file/folder in path. *#For Each*
+
+* **Path** : Path to loop through (default value : "")
+* **Files/Folders** : Wether to include files, folders or both in the loop
+  * Folders
+  * Files
+  * Files/Folders
+* **Recursive** : Wether the query is recursive or not (TODO)
+  * No
+  * Yes
+
+---
+
 # Expressions
-
-There are 17 expressions available
-
+#### There are 22 expressions available
 **GetAppPath** : Returns the current application directory. *#App*
 
-<br>
+---
+
 **GetLocale** : Get locale based on the system *#App*
 
-<br>
+---
+
 **GetOSArch** : Returns a string identifying the operating system CPU architecture *#OS*
 
-<br>
+---
+
 **GetOSHomedir** : Returns the home directory of the current user *#OS*
 
-<br>
+---
+
 **GetOSHostname** : Returns the hostname of the operating system *#OS*
 
-<br>
+---
+
 **GetOSPlatform** : Returns the operating system platform *#OS*
 
-<br>
-**GetHomePath** : User’s home directory *#Path*
+---
 
-<br>
+**GetHomePath** : Userâ€™s home directory *#Path*
+
+---
+
 **GetAppDataPath** : %APPDATA% (Win), $XDG_CONFIG_HOME or ~/.config (linux), ~/Library/Application (Mac) *#Path*
 
-<br>
-**GetUserDataPath** : By default it is the appData directory appended with your app’s name *#Path*
+---
 
-<br>
+**GetUserDataPath** : By default it is the appData directory appended with your appâ€™s name *#Path*
+
+---
+
 **GetExePath** : The current executable file *#Path*
 
-<br>
-**GetDesktopPath** : The current user’s Desktop directory *#Path*
+---
 
-<br>
-**GetDocumentsPath** : User’s document directory *#Path*
+**GetDesktopPath** : The current userâ€™s Desktop directory *#Path*
 
-<br>
-**GetDownloadsPath** : User’s download directory *#Path*
+---
 
-<br>
-**GetMusicPath** : User’s music directory *#Path*
+**GetDocumentsPath** : Userâ€™s document directory *#Path*
 
-<br>
-**GetPicturesPath** : User’s picture directory *#Path*
+---
 
-<br>
-**GetVideoPath** : User’s video directory *#Path*
+**GetDownloadsPath** : Userâ€™s download directory *#Path*
 
-<br>
+---
+
+**GetMusicPath** : Userâ€™s music directory *#Path*
+
+---
+
+**GetPicturesPath** : Userâ€™s picture directory *#Path*
+
+---
+
+**GetVideoPath** : Userâ€™s video directory *#Path*
+
+---
+
 **GetTempPath** : Temporary folder path *#Path*
+
+---
+
+**GetAppPathFolder** : Current App folder path *#Path*
+
+---
+
+**LastReadSync** : Get the last data synced readed *#Read*
+
+---
+
+**LastReadAsync** : Get the last data asynced readed *#Read*
+
+---
+
+**Exists** : Check if file/folder exixts *#Files*
+
+---
+
+**CurrentFileFolder** : The current file/folder in the loop *#Files*
+
+---
+
+

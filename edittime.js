@@ -1,17 +1,17 @@
 ﻿function GetPluginSettings() {
-  return {
-    "name": "Electron",
-    "id": "armaldio_electron",
-    "version": "1.0",
-    "description": "Run your game with the best performances inside Electron",
-    "author": "Armaldio",
-    "help url": "",
-    "category": "General",
-    "type": "object",
-    "rotatable": false,
-    "flags": 0 |
-      pf_singleglobal
-  };
+	return {
+		"name"       : "Electron",
+		"id"         : "armaldio_electron",
+		"version"    : "1.0",
+		"description": "Run your game with the best performances inside Electron",
+		"author"     : "Armaldio",
+		"help url"   : "https://github.com/armaldio/c2-electron-plugin",
+		"category"   : "General",
+		"type"       : "object",
+		"rotatable"  : false,
+		"flags"      : 0 |
+		pf_singleglobal
+	};
 };
 
 ////////////////////////////////////////
@@ -45,6 +45,17 @@ AddStringParam("Tag", "The unique tag", "");
 AddCondition(4, cf_trigger, "On read fail", "Read", "On read {0} fail", "Trigger when a specific read action fail to read", "OnReadFail");
 
 AddCondition(2, cf_none, "Is Electron", "Test", "If the platform is Electron", "Test if the game is running on electron", "IsElectron");
+
+AddStringParam("Path", "Path to loop through", '""');
+AddComboParamOption("Folders");
+AddComboParamOption("Files");
+AddComboParamOption("Files/Folders");
+AddComboParam("Files/Folders", "Wether to include files, folders or both in the loop");
+AddComboParamOption("No");
+AddComboParamOption("Yes");
+AddComboParam("Recursive", "Wether the query is recursive or not (TODO)");
+AddCondition(5, cf_looping | cf_not_invertible, "For each file/folder", "For Each",
+	"For each <i>{1}</i> in <i>{0}</i> (recursively = {2})", "Repeat the event for each file/folder in path.", "ForEachFileFolder");
 ////////////////////////////////////////
 // Actions
 
@@ -70,11 +81,30 @@ AddAction(6, cf_none, "Show open dialog", "Dialog", "Open a dialog to chose a fi
 AddStringParam("Tag", "A unique tag to keep track of the result", "");
 AddStringParam("Path", "The path of the file to write", "");
 AddStringParam("Data", "The data to write", "");
-AddAction(0, cf_none, "Write data to file", "Write", "Write {2} to {1} ({0})", "Write data to a specific file asynchronously", "Write");
+AddAction(0, cf_none, "Write asynchronous", "Write", "Write {2} to {1} ({0})", "Write data to a specific file asynchronously", "Write");
 
 AddStringParam("Tag", "A unique tag to keep track of the result", "");
 AddStringParam("Path", "The file to read", "");
+AddStringParam("Encoding", "The encoding of the file", "utf8");
 AddAction(9, cf_none, "Read file", "Read", "Read {1} ({0})", "Read a file asynchronously", "Read");
+
+AddStringParam("Path", "The path of the file to read", "");
+AddAction(10, cf_none, "Read synchronously a file", "Read", "Read {0}", "Read a file synchronously", "ReadSync");
+
+AddStringParam("Path", "The path of the file to read", "");
+AddAction(11, cf_none, "Delete synchronously a file", "Delete", "Delete {0}", "Delete a file synchronously", "DeleteSync");
+
+AddStringParam("Path", "The path of the file to read", "");
+AddAction(12, cf_none, "Create synchronously a file", "Create", "Create {0}", "Create a file synchronously", "CreateSync");
+
+AddStringParam("Path", "The path of the file to write", "");
+AddStringParam("Data", "The data to write", "");
+AddStringParam("Encoding", "The encoding of the file", "utf8");
+AddComboParamOption("No");
+AddComboParamOption("Yes");
+AddComboParam("Overwrite", "Overwrite the file if it already exists", "No");
+AddAction(13, cf_none, "Write synchronous", "Write", "Write {1} to {0} ({2})", "Write data to a specific file synchronously", "WriteSync");
+
 
 ////////////////////////////////////////
 // Expressions
@@ -99,6 +129,12 @@ AddExpression(14, ef_return_any, "Get music path", "Path", "GetMusicPath", "User
 AddExpression(15, ef_return_any, "Get pictures path", "Path", "GetPicturesPath", "User’s picture directory");
 AddExpression(16, ef_return_any, "Get videos path", "Path", "GetVideoPath", "User’s video directory");
 AddExpression(17, ef_return_any, "Get temp path", "Path", "GetTempPath", "Temporary folder path");
+AddExpression(18, ef_return_any, "Get app path", "Path", "GetAppPathFolder", "Current App folder path");
+
+AddExpression(19, ef_return_any, "Last read sync data", "Read", "LastReadSync", "Get the last data synced readed");
+AddExpression(20, ef_return_any, "Last read async data", "Read", "LastReadAsync", "Get the last data asynced readed");
+AddExpression(21, ef_return_any, "File exists", "Files", "Exists", "Check if file/folder exixts");
+AddExpression(22, ef_return_any, "The current file/folder in the loop", "Files", "CurrentFileFolder", "The current file/folder in the loop");
 ////////////////////////////////////////
 ACESDone();
 
@@ -116,51 +152,57 @@ var property_list = [];
 
 // Called by IDE when a new object type is to be created
 function CreateIDEObjectType() {
-  return new IDEObjectType();
+	return new IDEObjectType();
 }
 
 // Class representing an object type in the IDE
 function IDEObjectType() {
-  assert2(this instanceof arguments.callee, "Constructor called as a function");
+	assert2(this instanceof arguments.callee, "Constructor called as a function");
 }
 
 // Called by IDE when a new object instance of this type is to be created
 IDEObjectType.prototype.CreateInstance = function (instance) {
-  return new IDEInstance(instance);
+	return new IDEInstance(instance);
 }
 
 // Class representing an individual instance of an object in the IDE
 function IDEInstance(instance, type) {
-  assert2(this instanceof arguments.callee, "Constructor called as a function");
+	assert2(this instanceof arguments.callee, "Constructor called as a function");
 
-  // Save the constructor parameters
-  this.instance = instance;
-  this.type = type;
+	// Save the constructor parameters
+	this.instance = instance;
+	this.type     = type;
 
-  // Set the default property values from the property table
-  this.properties = {};
+	// Set the default property values from the property table
+	this.properties = {};
 
-  for (var i = 0; i < property_list.length; i++)
-    this.properties[property_list[i].name] = property_list[i].initial_value;
+	for (var i = 0; i < property_list.length; i++)
+		this.properties[property_list[i].name] = property_list[i].initial_value;
 
-  // Plugin-specific variables
-  // this.myValue = 0...
+	// Plugin-specific variables
+	// this.myValue = 0...
 }
 
 // Called when inserted via Insert Object Dialog for the first time
-IDEInstance.prototype.OnInserted = function () {}
+IDEInstance.prototype.OnInserted = function () {
+}
 
 // Called when double clicked in layout
-IDEInstance.prototype.OnDoubleClicked = function () {}
+IDEInstance.prototype.OnDoubleClicked = function () {
+}
 
 // Called after a property has been changed in the properties bar
-IDEInstance.prototype.OnPropertyChanged = function (property_name) {}
+IDEInstance.prototype.OnPropertyChanged = function (property_name) {
+}
 
 // For rendered objects to load fonts or textures
-IDEInstance.prototype.OnRendererInit = function (renderer) {}
+IDEInstance.prototype.OnRendererInit = function (renderer) {
+}
 
 // Called to draw self in the editor if a layout object
-IDEInstance.prototype.Draw = function (renderer) {}
+IDEInstance.prototype.Draw = function (renderer) {
+}
 
 // For rendered objects to release fonts or textures
-IDEInstance.prototype.OnRendererReleased = function (renderer) {}
+IDEInstance.prototype.OnRendererReleased = function (renderer) {
+}
