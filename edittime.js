@@ -81,6 +81,10 @@ AddAction(6, cf_none, "Show open dialog", "Dialog", "Open a dialog to chose a fi
 AddStringParam("Tag", "A unique tag to keep track of the result", "");
 AddStringParam("Path", "The path of the file to write", "");
 AddStringParam("Data", "The data to write", "");
+AddComboParamOption("utf8");
+AddComboParamOption("Binary");
+AddComboParamOption("Base64");
+AddComboParam("Encoding Mode", "Encoding mode.");
 AddAction(0, cf_none, "Write asynchronous", "Write", "Write {2} to {1} ({0})", "Write data to a specific file asynchronously", "Write");
 
 AddStringParam("Tag", "A unique tag to keep track of the result", "");
